@@ -6,7 +6,7 @@ serversocket =  socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #get local machine name
 host = socket.gethostname()
-port = 9999
+port = 9990
 
 #bind to the port
 serversocket.bind((host, port))
@@ -19,11 +19,11 @@ while True:
 	print "Got a connection from %s" % str(addr)
 	currentTIme = time.ctime(time.time())+"\r\n"
 	clientsocket.send(currentTIme.encode('ascii'))
-	while flag:
+	while True:
 		#establish connection
-		choice = clientsocket.recv(10)
+		choice = clientsocket.recv(20)
 		print choice
-		if choice != '1':
-			flag = 0
+		if choice == "exit":
+			break
 
 	clientsocket.close()
