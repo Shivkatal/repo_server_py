@@ -5,7 +5,7 @@ s =socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #get local machine name
 host = socket.gethostname()
-port = 9990
+port = 9999
 
 #connection to hostname on the port
 s.connect((host, port))
@@ -21,6 +21,10 @@ while True:
 		s.send("exit")
 		break
 	s.send(choice)
-
+	if choice == "share":
+		filename = str(raw_input())
+		s.send(filename)
+		path =  str(raw_input())
+		s.send(path)
 s.close()
 
