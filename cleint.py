@@ -1,11 +1,11 @@
 import socket
-
+commands = ["share","download","exit"]
 #create a socket object
 s =socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #get local machine name
 host = socket.gethostname()
-port = 9999
+port = 9990
 
 #connection to hostname on the port
 s.connect((host, port))
@@ -15,10 +15,12 @@ tm = s.recv(1024)
 
 print "The time got from server is %s" % tm.decode('ascii')
 
-choice = str(input())
-while choice=='1':
+while True:
+	choice = str(raw_input())
+	if choice not in commands or choice == "exit":
+		s.send("exit")
+		break
 	s.send(choice)
-	choice = str(input())
 
 s.close()
 
