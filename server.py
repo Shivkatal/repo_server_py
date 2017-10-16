@@ -1,12 +1,20 @@
 import socket
 import time
 
+def share(sock, ip):
+	filename = sock.recv(100)
+	path = sock.recv(1024)
+	info = str(ip[0])+' '+filename+' '+path+'\n'
+	f = open('repo.txt','a')
+	f.write(info)
+	f.close()
+
 #create a socket object
 serversocket =  socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #get local machine name
 host = socket.gethostname()
-port = 9990
+port = 9999
 
 #bind to the port
 serversocket.bind((host, port))
@@ -25,5 +33,9 @@ while True:
 		print choice
 		if choice == "exit":
 			break
+		if choice =="share":
+			share(clientsocket, addr)
 
 	clientsocket.close()
+
+
