@@ -13,6 +13,12 @@ s.connect((host, port))
 #receive no more than 1024 bytes
 tm = s.recv(1024)
 
+print "The time got from server is %s" % tm.decode('ascii')
+
+choice = str(input())
+while choice=='1':
+	s.send(choice)
+	choice = str(input())
+
 s.close()
 
-print "The time got from server is %s" % tm.decode('ascii')
