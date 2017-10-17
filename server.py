@@ -9,12 +9,24 @@ def share(sock, ip):
 	f.write(info)
 	f.close()
 
+def findMirrors(file):
+	f = open('repo.txt','rb')
+	mirrors = {}
+	cnt = 0
+	for entry in f:
+		filename = (entry.split())[1]
+		if filename == file:
+			mirrors[cnt] = entry
+			cnt += 1
+	f.close()
+	return mirrors, str(cnt)
+
 #create a socket object
 serversocket =  socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #get local machine name
 host = socket.gethostname()
-port = 9999
+port = 9998
 
 #bind to the port
 serversocket.bind((host, port))
@@ -35,6 +47,22 @@ while True:
 			break
 		if choice =="share":
 			share(clientsocket, addr)
+		elif choice == "download":
+			file = clientsocket.recv(100)
+			mirrors, cnt = findMirrors(file)
+			if len(cnt) == 1:
+				cnt = "00"+cnt
+			elif len(cnt) == 2:
+				cnt = "0"+cnt
+			clientsocket.send(cnt)
+			cnt = int(cnt)
+			for i in range(0,cnt):
+				sz = str(len(mirrors[i]))
+				while len(sz) < 4:
+					sz = "0"+sz
+				#print sz,i
+				clientsocket.send(sz)
+				clientsocket.send(mirrors[i])
 
 	clientsocket.close()
 
