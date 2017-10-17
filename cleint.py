@@ -14,13 +14,24 @@ def download(sock):
 	#print cnt
 	for i in range(1,cnt+1):
 		sz = int(sock.recv(4))
+		print sz
 		mirror = sock.recv(sz)
 		print i, mirror
 		mirrors[cnt] = mirror
 
 
 	print "Select Your choice:"
-	opt = int(raw_input())
+	opt = str(raw_input())
+	if int(opt) > cnt:
+		print "wrong choice..."
+		sock.send("0000")
+		return
+	while len(opt) < 4:
+		opt = "0"+opt
+	#print opt
+	sock.send(opt)
+
+
 	
 
 
@@ -30,7 +41,7 @@ s =socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #get local machine name
 host = socket.gethostname()
-port = 9998
+port = 9990
 
 #connection to hostname on the port
 s.connect((host, port))
