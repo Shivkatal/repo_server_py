@@ -30,6 +30,13 @@ def download(sock):
 		opt = "0"+opt
 	#print opt
 	sock.send(opt)
+	write_file = open(filename,'wb')
+	while True:
+		length = int(sock.recv(4))
+		if length == 0:
+			break
+		data = sock.recv(length)
+		write_file.write(data)
 
 
 	
@@ -41,7 +48,7 @@ s =socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #get local machine name
 host = socket.gethostname()
-port = 9990
+port = 9999
 
 #connection to hostname on the port
 s.connect((host, port))
