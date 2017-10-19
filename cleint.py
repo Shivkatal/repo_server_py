@@ -54,9 +54,9 @@ port = 9999
 s.connect((host, port))
 
 #receive no more than 1024 bytes
-tm = s.recv(1024)
+#tm = s.recv(1024)
 
-print "The time got from server is %s" % tm.decode('ascii')
+#print "The time got from server is %s" % tm.decode('ascii')
 
 while True:
 	choice = str(raw_input())

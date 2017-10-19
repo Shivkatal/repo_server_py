@@ -1,5 +1,22 @@
 import socket
 import time
+import threading
+
+class myThreading(threading.Thread):
+
+	def __init__(self, threadID, name, counter, sock, IP):
+		threading.Thread.__init__(self)
+		self.threadID = threadID
+		self.name = name
+		self.counter = counter
+		self.sock = sock
+		self.IP = IP
+
+	def run(self):
+		print "Connected with",self.counter
+		connection(self.sock, self.IP)
+		print "Ending connection with", self.counter
+
 
 def share(sock, ip):
 	filename = sock.recv(100)
@@ -60,24 +77,10 @@ def downloadServer(csock):
 	csock.send(packet)
 	csock.send("0000")
 
-#create a socket object
-serversocket =  socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-#get local machine name
-host = socket.gethostname()
-port = 9999
-
-#bind to the port
-serversocket.bind((host, port))
-
-#queue upto 5 requests
-serversocket.listen(5)
-while True:
-	flag=1
-	clientsocket, addr =  serversocket.accept()
+def connection(clientsocket, addr):
 	print "Got a connection from %s" % str(addr)
-	currentTIme = time.ctime(time.time())+"\r\n"
-	clientsocket.send(currentTIme.encode('ascii'))
+	#currentTIme = time.ctime(time.time())+"\r\n"
+	#clientsocket.send(currentTIme.encode('ascii'))
 	while True:
 		#establish connection
 		choice = clientsocket.recv(20)
@@ -88,8 +91,30 @@ while True:
 			share(clientsocket, addr)
 		elif choice == "download":
 			downloadServer(clientsocket)
-			
-
 	clientsocket.close()
+
+
+#create a socket object
+serversocket =  socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+#get local machine name
+host = socket.gethostname()
+port = 9999
+
+#bind to the port
+serversocket.bind((host, port))
+
+threadLock = threading.Lock()
+#queue upto 5 requests
+i = 0
+while True:
+	serversocket.listen(0)
+	clientsocket, addr =  serversocket.accept()
+	i += 1
+	thread = myThreading(i, "thread"+str(i), i, clientsocket, addr)
+	thread.start()
+	thread.join()
+	#connection(clientsocket, addr)
+
 
 
